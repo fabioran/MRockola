@@ -1,0 +1,19 @@
+<RCC>
+    <qresource prefix="/">
+        <file alias="default">resources/images/defaultCover.png</file>
+        <file alias="main-background">resources/images/background.jpg</file>
+        <file alias="splash">resources/images/mrockola_splash.png</file>
+        <file alias="cover-background">resources/images/black.png</file>
+        <file alias="app_icon">resources/images/mrockola_icono_64x64.png</file>
+        <file alias="logo-mghik">resources/images/mghik.png</file>
+        <file alias="arrow-left">resources/images/arrowleft.png</file>
+        <file alias="arrow-right">resources/images/arrowright.png</file>
+        <file alias="arrow-up">resources/images/arrowup.png</file>
+        <file alias="interface_image">resources/images/interface.png</file>
+        <file alias="folder_image">resources/images/folder.png</file>
+        <file alias="auidoVideo_image">resources/images/audioVideo.png</file>
+        <file alias="keyboard_image">resources/images/keyboard.png</file>
+        <file alias="help_image">resources/images/help.png</file>
+        <file alias="about_image">resources/images/about.png</file>
+    </qresource>
+</RCC>

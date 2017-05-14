@@ -1,0 +1,20 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main/MRockola.qml</file>
+        <file>components/Aboutui.qml</file>
+        <file>components/Helpui.qml</file>
+        <file>components/Background.qml</file>
+        <file>components/ControlBar.qml</file>
+        <file>components/DisplayBar.qml</file>
+        <file>components/Cover.qml</file>
+        <file>components/CoverDetail.qml</file>
+        <file>components/Folderui.qml</file>
+        <file>components/LookAndFeelui.qml</file>
+        <file>components/MRSetup.qml</file>
+        <file>components/Finder.qml</file>
+        <file>components/Search.qml</file>
+        <file>components/Progressbar.qml</file>
+        <file>components/Keyboardui.qml</file>
+        <file>components/ButtonsAction.qml</file>
+    </qresource>
+</RCC>
