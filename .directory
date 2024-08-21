@@ -1,6 +1,4 @@
 [Dolphin]
-SortOrder=1
-SortRole=date
-Timestamp=2015,8,15,17,35,55
+PreviewsShown=true
+Timestamp=2016,2,1,2,58,9
 Version=3
-ViewMode=1

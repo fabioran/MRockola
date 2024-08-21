@@ -18,27 +18,33 @@
  * Email: inge_lopez@yahoo.com
  */
 
-import QtQuick 2.5
-import QtQuick.Controls 2.0
+import QtQuick 2.3
+import QtQuick.Controls 1.2
 import QtQuick.Layouts 1.1
 import MRockola.DBase 1.0
 import MRockola.MPlayer 1.0
 import MRockola.Settings 1.0
 import QtQuick.Window 2.0
+import QtQuick.Dialogs 1.2
 
 import "../components"
 
 ApplicationWindow {
     title: "MRockola"
     visible: true
-    width: Screen.desktopAvailableWidth ; height: Screen.desktopAvailableHeight
-    //width: 800; height: 640
+    //width: Screen.desktopAvailableWidth ; height: Screen.desktopAvailableHeight
+    width: 800; height: 600
     //width: 1920; height: 1080
 
  Item {
      id: mainWindow
      anchors.fill: parent
      property alias setFoundCover: gridView.currentIndex;
+     property bool setPlayList: false
+     property string getNameList: "none"
+
+     // property int fullTime: 0
+
 
      Rectangle {
         anchors.fill: parent
@@ -57,6 +63,7 @@ ApplicationWindow {
     }
 
     Rectangle {
+        objectName: "before main"
         anchors.fill: parent
         color: "transparent"
         ColumnLayout {
@@ -64,6 +71,7 @@ ApplicationWindow {
             anchors.fill: parent
             Rectangle {
                 id: mainLayout
+                objectName: "mainLayout"
                 Layout.fillWidth: true
                 Layout.fillHeight: true
                 Layout.minimumHeight: (parent.height * 0.80)
@@ -80,10 +88,11 @@ ApplicationWindow {
                     snapMode: GridView.SnapToRow
                     keyNavigationWraps: true
 
-                    add: Transition {
-                        NumberAnimation { properties: "x,y"; from: 100; duration: 1000 }
-                    }
-                    enabled: !finder.isVisible  //finder show disable or enable this
+                    // Show off... tirei por hora...
+                    //add: Transition {
+                        //NumberAnimation { properties: "x,y"; from: 100; duration: 1000 }
+                    //}
+                    //enabled: !finder.isVisible  //finder show disable or enable this
                 }
             }
             Rectangle {
@@ -113,6 +122,7 @@ ApplicationWindow {
         }
         Rectangle {
             id: player
+            objectName: "player"
             anchors.fill: parent
             anchors.margins: 5
             anchors.bottomMargin: bar_menu.height
@@ -133,11 +143,23 @@ ApplicationWindow {
                 }
             }
         }
+        CenterDialog {
+            id: centeredDialog
+            // Layout.fillHeight: true
+            // Layout.fillWidth: true
+        }
+
         Finder {
             id: finder
             anchors.centerIn: parent
             anchors.verticalCenterOffset: -(parent.height * 0.08)
         }
+
+        Plist { id: playList
+                anchors.centerIn: parent
+                anchors.verticalCenterOffset: -(parent.height * 0.08) }
+
+
         CoverDetail {
             id: coverDetail
         }
@@ -159,26 +181,86 @@ ApplicationWindow {
 
         MRSetup {
             id: mainSetup
+            Layout.fillHeight: true
+            Layout.fillWidth: true
+            anchors.fill: parent
+            visible: false
+        }
+        LookAndFeelui {
+            id: mainLook
             anchors.fill: parent
             visible: false
         }
     }
+//    Keys.forwardTo: [playList]
+//    focus: true
 
     Keys.onPressed: {
 
         switch( settings.validateKey(event.key) ) {
+
             case Settings.KEY_SKIP:
                 mediaPlayer.playNext()
+                /*
+                centeredDialog.title = qsTr("ATTENTION!")
+                centeredDialog.text = qsTr("COVERDETAIL -> "+mediaPlayer.getCurrentTime())
+                centeredDialog.visible = true
+                */
                 break;
-            case Qt.Key_P:
+            case Settings.KEY_R: //do scan of networks in range
+                 centeredDialog.title = qsTr("ATTENTION!")
+                 centeredDialog.text = qsTr("RKEY ENABLED -> ")
+                 console.debug("Test")
+                 // var anArray = database.scan()
+                 var anArray = database.get2PlayTable(51)
+                 for (var i=0; i<anArray.length; i++)
+                     console.log("Array item:", anArray[i])
+                 break;
+            case Settings.KEY_P: // Qt.Key_P:
                 //event.accepted = true
                 //mediaPlayer.setQueue("/home/isaac/backuplaptop/backup/karaoke/espanol2/22052.mp3", 2)
+                console.log("geNameList", mainWindow.getNameList)
+                if (mainWindow.setPlayList) {
+                    centeredDialog.title = qsTr("ATTENTION!")
+                    centeredDialog.text = qsTr("PLAYLIST DISABLED -> "+mainWindow.getNameList)
+                    centeredDialog.visible = true
+                    mainWindow.setPlayList = false
+                    mainWindow.getNameList = "none"
+                    // database.loadCovers();
+                }
+                else {
+                    mainWindow.setPlayList = true
+                    centeredDialog.title = qsTr("ATTENTION!")
+                    // centeredDialog.text = qsTr("PlayID: "+database.storeList(0, "NONE", 0))
+                    centeredDialog.text = qsTr("playlist mode enabled -> "+mainWindow.getNameList)
+                    centeredDialog.visible = true
+                }
+                //if(!playList.isVisible && !coverDetail.isVisible) {
+                    // playList.show()
+                    // playList.forceActiveFocus() // tem de usar essa merda sempre depois de chamar o qml...
+                 //}
                 break;
             case Settings.KEY_LEFT:
+                //
+                if(gridView.currentIndex >= 2)
+                  gridView.currentIndex = gridView.currentIndex - 2
+                /*
+                centeredDialog.title = qsTr("Error!")
+                centeredDialog.text = qsTr("currentIndex: "+gridView.currentIndex)
+                centeredDialog.visible = true
+                */
                 if(!coverDetail.isVisible)
                     gridView.moveCurrentIndexLeft()
                 break;
             case Settings.KEY_RIGHT:
+                // settings.popIt(gridView.currentIndex)
+//                gridView.moveCurrentIndexDown()
+                gridView.currentIndex = gridView.currentIndex + 2
+                /*
+                centeredDialog.title = qsTr("Error!")
+                centeredDialog.text = qsTr("currentIndex: "+gridView.currentIndex)
+                centeredDialog.visible = true
+                */
                 if(!coverDetail.isVisible)
                     gridView.moveCurrentIndexRight()
                 break;
@@ -201,8 +283,20 @@ ApplicationWindow {
                 if(search.number.length === 4) {
                     if(!coverDetail.isVisible) {
                         if(gridView.count > search.number) {
+
                             gridView.currentIndex = search.number
-                            gridView.currentItem.openCoverDetail();
+                            gridView.currentItem.getAlbumDetail()
+
+                            if (coverDetail.typeCover === 4) {
+                              console.log("indexCover ->", coverDetail.indexCover)
+                              coverDetail.playMixTape(coverDetail.indexCover)
+                              // coverDetail.setTrack(coverDetail.indexCover)
+
+                            }
+                            else {
+                              gridView.currentItem.openCoverDetail();
+                            }
+
                         }
                     }
                     search.hide()
@@ -224,8 +318,23 @@ ApplicationWindow {
                 break;
 
             case Settings.KEY_CONFIG:
+                console.debug ("[settings] -> CONFIG")
+                console.log (event.text, parent.objectName.toString())
+
                 mainSetup.visible = true;
                 break;
+            default:
+                console.debug ("veio pra default")
+                console.log (event.text)
+                // centeredDialog.title = qsTr("fica zoado no OSX!")
+                // centeredDialog.text = qsTr("NAO TEM NOME NESSA PARADA")
+                // centeredDialog.visible = true
+                if( event.text === 'q' )
+                    Qt.quit()
+                break;
+
+
+                // console.log ("1: count is zero")
         }
     }
 
