@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/">
+        <file>languages/mrockola_es.qm</file>
+    </qresource>
+</RCC>
