@@ -1,0 +1,5 @@
+insert into ALBUM (name, path, image, artistId, type) VALUES ('playlist Perola','/home/scott/Music/mp3juices/Moby/Perola','NONE'|15|0);
+insert into ALBUM (name, path, image, artistId, type) VALUES ('playlist Perola','/home/scott/Music/mp3juices/Moby/Perola','NONE',15,0);
+insert into TRACK (albumId, name, position) VALUES (29,'Arrested Development Mama\'s Always On Stage.mp3', 1);
+insert into TRACK (albumId, name, position) VALUES (29,"Arrested Development Mama's Always On Stage.mp3", 1);
+insert into TRACK (albumId, name, position) VALUES (29,"Civil War Songs.mp3",1);

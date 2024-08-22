@@ -4,6 +4,7 @@
         <file alias="main-background">resources/images/background.jpg</file>
         <file alias="splash">resources/images/mrockola_splash.png</file>
         <file alias="cover-background">resources/images/black.png</file>
+        <file alias="coverplaylist1">resources/images/playlist_cover1.png</file>
         <file alias="app_icon">resources/images/mrockola_icono_64x64.png</file>
         <file alias="logo-mghik">resources/images/mghik.png</file>
         <file alias="arrow-left">resources/images/arrowleft.png</file>
@@ -15,5 +16,6 @@
         <file alias="keyboard_image">resources/images/keyboard.png</file>
         <file alias="help_image">resources/images/help.png</file>
         <file alias="about_image">resources/images/about.png</file>
+        <file alias="look_image">resources/images/folder.png</file>
     </qresource>
 </RCC>

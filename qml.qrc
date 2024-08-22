@@ -1,6 +1,8 @@
 <RCC>
     <qresource prefix="/">
         <file>main/MRockola.qml</file>
+        <file>main/CenterDialog.qml</file>
+        <file>components/Plist.qml</file>
         <file>components/Aboutui.qml</file>
         <file>components/Helpui.qml</file>
         <file>components/Background.qml</file>
