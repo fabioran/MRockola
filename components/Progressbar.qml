@@ -18,7 +18,7 @@
  * Email: inge_lopez@yahoo.com
  */
 
-import QtQuick 2.5
+import QtQuick 2.3
 
 Item {
     id: progressbar

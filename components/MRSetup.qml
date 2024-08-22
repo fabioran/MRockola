@@ -18,18 +18,22 @@
  * Email: inge_lopez@yahoo.com
  */
 
-import QtQuick 2.5
-import QtQuick.Controls 2.0
+import QtQuick 2.3
+import QtQuick.Controls 1.2
 import QtQuick.Layouts 1.1
+import QtQuick.Dialogs 1.0
+import QtQuick.Window 2.0
 
 Item {
     id: root
     property alias uiabout: uiabout
+    // property alias uihelp: uihelp
     Rectangle {
         id: main
         SystemPalette { id: nativePalette; colorGroup: SystemPalette.Active }
         anchors.fill: parent
         color: nativePalette.window
+        // color: "red"
         RowLayout {
             anchors.fill: parent
             spacing: 2
@@ -45,20 +49,24 @@ Item {
                 focus: true
                 model: ListModel {
                     ListElement {
-                        name: qsTr("Folder")
+                        name: "Folder"
                         path: "qrc:/folder_image"
                     }
                     ListElement {
-                        name: qsTr("keyboard")
+                        name: "keyboard"
                         path: "qrc:/help_image"
                     }
                     ListElement {
-                        name: qsTr("Help")
+                        name: "Help"
                         path: "qrc:/help_image"
                     }
                     ListElement {
-                        name: qsTr("About")
+                        name: "About"
                         path: "qrc:/about_image"
+                    }
+                    ListElement {
+                        name: "LookN' Feel"
+                        path: "qrc:/look_image"
                     }
                 }
             }
@@ -70,13 +78,16 @@ Item {
                     anchors.fill: parent
                     spacing: 2
                     Rectangle {
-                        anchors.bottom: button_close.top
+                        // anchors.bottom: button_close.top
+                        Layout.alignment: Qt.AlignTop
                         Layout.fillWidth: true
                         Layout.fillHeight: true
                         color:  nativePalette.window
                         Folderui {
                             id: uifolder
-                            anchors.fill: parent
+                            // anchors.fill: parent
+                            Layout.fillHeight: true
+                            Layout.fillWidth: true
                             visible: false
                         }
                         Keyboardui {
@@ -94,12 +105,23 @@ Item {
                             anchors.fill: parent
                             visible: false
                         }
+                        LookAndFeelui {
+                            id: uilook
+                            anchors.fill: parent
+                            visible: false
+                        }
+
                     }
                     Button {
                         id: button_close
                         text:qsTr("Close")
-                        anchors.bottom: parent.bottom
-                        anchors.right: parent.right
+                        //Layout.fillHeight: true
+                        //Layout.fillWidth: true
+                        // Layout.bottom: parent.bottom // sempre q bota nao abre.
+                        Layout.alignment: Qt.AlignBottom
+                        // anchors.bottom: parent.bottom
+                        // anchors.right: parent.right
+                        // Layout.rightMargin: 20
                         anchors.rightMargin: 20
                         onClicked: {
                             root.visible = false
@@ -117,6 +139,7 @@ Item {
             width:  parent.width
             height: width
             color: "transparent"
+            // color: "red"
             Image {
                 id: pic
                 height: parent.height * 0.80
@@ -142,8 +165,11 @@ Item {
                         root.state = "Keyboard"
                     } else if(index === 2) {
                         root.state = "Help"
-                    } else {
+                    } else if(index === 3) {
                         root.state = "About"
+                    } else {
+                        root.state = "Look"
+                        console.debug("escreve ai")
                     }
                 }
             }
@@ -166,7 +192,12 @@ Item {
         State {
             name: "About";
             PropertyChanges { target:uiabout; visible: true }
+        },
+        State {
+            name: "Look"
+            PropertyChanges { target:uilook; visible: true }
         }
+
     ]
 
     function progressBarMax(value) {
@@ -180,5 +211,10 @@ Item {
         uifolder.progressBarUpdate(uifolder.maxValueProgressbar)
     }
 
-    Component.onCompleted: { listView1.currentIndex = 0; root.state = "Folder" }
+    Component.onCompleted: {
+        listView1.currentIndex = 0;
+        root.state = "Folder"
+        console.log("veio aqui runtime", parent.objectName)
+        console.log("[onCompleted]", parent.width)
+    }
 }

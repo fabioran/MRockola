@@ -18,7 +18,7 @@
  * Email: inge_lopez@yahoo.com
  */
 
-import QtQuick 2.5
+import QtQuick 2.3
 import QtQuick.Layouts 1.1
 
 Rectangle {

@@ -17,29 +17,38 @@
  *
  * Email: inge_lopez@yahoo.com
  */
-import QtQuick 2.5
-import QtQuick.Controls 2.0
+import QtQuick 2.3
+import QtQuick.Dialogs 1.2
+import QtQuick.Controls 1.2
 import QtQuick.Layouts 1.1
+import "../main"
 
 Item {
     id: root
+    property alias groupBox3: groupBox3
+
+    // CenterDialog { id: centeredDialog }
 
     Rectangle {
         SystemPalette { id: nativePalette; colorGroup: SystemPalette.Active }
-        anchors.fill: parent
+        // anchors.fill: parent
+        Layout.fillWidth: true
         color: nativePalette.window
 
         ColumnLayout {
             id: columnLayout1
             spacing: 6
-            anchors.fill: parent
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            // anchors.fill: parent
             Label {
                 id: label1
                 color: nativePalette.windowText
                 text: qsTr("Look and feel")
                 font.bold: true
                 font.pixelSize: 24
-                anchors.horizontalCenter: parent.horizontalCenter
+                Layout.alignment: Qt.AlignHCenter
+                // anchors.horizontalCenter: parent.horizontalCenter
             }
             GroupBox {
                 id: groupBox1
@@ -89,43 +98,46 @@ Item {
                         id: row1
                         Label {
                             id: label3
-                            text: qsTr("Background Imge:")
-                        //anchors.left: parent.left
-                       // anchors.leftMargin: 10
+                            text: qsTr("Background Image:")
+                            // anchors.left: parent.left
+                            // anchors.leftMargin: 10
                         }
+                        spacing: 2
                         Button {
-                            id: button1
+                            id: bg
                             text: qsTr("Change")
+                            onClicked: {
+                                fileDialog.visible = true
+                            }
+
                         //anchors.left: label3.right
                         //anchors.leftMargin: 25
                         }
                     }
-                    Row {
-                        id: row2
-                        visible: false
-                        Label {
-                            id: label4
-                            text: qsTr("Label")
-                        }
-                        Button {
-                            id: button2
-                            text: qsTr("Button")
-                        }
-                    }
-                    Row {
-                        id: row3
-                        visible: false
-                        Label {
-                            id: label5
-                            text: qsTr("Label")
-                        }
-                        Button {
-                            id: button3
-                            text: qsTr("Button")
-                        }
-                    }
                 }
             }
+        }
+    }
+    FileDialog {
+        id: fileDialog
+        title:qsTr("Please choose a folder")
+        // folder: shortcuts
+        // selectFolder: true
+        nameFilters: [ "Image files (*.jpg *.png *.jpeg)", "All files (*)" ]
+        // selectedNameFilterExtensions: ["Image files (*.jpg *.png *.jpeg)", "All files (*)"]
+        // sidebarVisible: true
+        // width: Screen.width
+        onAccepted: {
+            folderModel.append({"path": fileDialog.folder.toString().replace("file:///", "/"), "option": false ,"type": optionTypeFile})
+            close();
+        }
+        onRejected: {
+            close();
+        }
+        onSelectionAccepted: {
+           centeredDialog.title = qsTr("Error!")
+           centeredDialog.text = qsTr("You chosed: " + fileDialog.fileUrls )
+           centeredDialog.visible = true
         }
     }
 }

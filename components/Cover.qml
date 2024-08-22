@@ -18,8 +18,8 @@
  * Email: inge_lopez@yahoo.com
  */
 
-import QtQuick 2.5
-import QtQuick.Controls 2.0
+import QtQuick 2.3
+import QtQuick.Controls 1.2
 
 Item {
     id: coverView
@@ -105,7 +105,7 @@ Item {
                     Text {
                         id: songName
                         color: "black"
-                        text:  ("00"+ index ).slice(-2) + ".-" + modelData
+                        text:  ("00"+ index ).slice(-2) + " " + modelData
                         font.bold: true
                         font.pointSize: 14
                         wrapMode: Text.WordWrap
@@ -137,6 +137,17 @@ Item {
         onClicked: {
            openCoverDetail()
         }
+    }
+
+    // Coloquei issu aqui para atualizar o index... nao sei fazer issu na mao...
+    function getAlbumDetail() {
+        coverDetail.indexCover = id
+        coverDetail.typeCover = type
+        coverDetail.artist = artist
+        coverDetail.order = order
+        coverDetail.imagen = coverImage.source
+        coverDetail.playlist = playlist
+        coverDetail.album = album
     }
 
     function openCoverDetail() {

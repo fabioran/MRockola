@@ -17,8 +17,8 @@
  *
  * Email: inge_lopez@yahoo.com
  */
-import QtQuick 2.5
-import QtQuick.Controls 1.4
+import QtQuick 2.3
+import QtQuick.Controls 1.2
 import QtQuick.Dialogs 1.2
 import QtQuick.Layouts 1.1
 import QtQuick.Window 2.0
@@ -45,7 +45,7 @@ Item {
 
         ColumnLayout {
             id: mainColumnLayout
-            anchors.fill: parent
+            // anchors.fill: parent
             Layout.fillWidth: true
             Layout.fillHeight: true
             spacing: 10
@@ -53,13 +53,16 @@ Item {
                 id: labelTitle
                 color: nativePalette.windowText
                 text: qsTr("Search file")
-                anchors.horizontalCenter: parent.horizontalCenter
+                Layout.alignment: Qt.AlignHCenter
+                // anchors.horizontalCenter: parent.horizontalCenter
                 font.pointSize: 20
                 font.bold: true
             }
             RowLayout {
                 spacing: 6
-                anchors.top: labelTitle.bottom
+                Layout.topMargin: Qt.AlignBottom
+                // anchors.top: labelTitle.bottom
+                // Layout.topMargin: 10
                 anchors.topMargin: 10
                 Layout.fillWidth: true
                 Layout.fillHeight: true
@@ -165,6 +168,7 @@ Item {
                         id: button5
                         text: qsTr("Track Name.mp3")
                         exclusiveGroup: fileName
+                        checked: true
                     }
                     RadioButton {
                         id: button4
@@ -175,27 +179,35 @@ Item {
                         id: button3
                         text: qsTr("xx - TrackName.mp3 (xx=2 digit track number)")
                         exclusiveGroup: fileName
-                        checked: true
+                        // checked: true
                     }
                 }
             }
             Button {
                 id: button_update
                 text:qsTr("Update database")
-                anchors.topMargin: 10
-                anchors.horizontalCenter: parent.horizontalCenter
+                // anchors.topMargin: 10
+                // anchors.horizontalCenter: parent.horizontalCenter
+                Layout.topMargin: 10
+                Layout.alignment: Qt.AlignHCenter
                 enabled: false
                 onClicked: {
                     enabled = false
-                    setPath()
+                    setPathT()
+
                 }
             }
             ProgressBar {
                 id: progressBar_update
-                anchors.right: parent.right
-                anchors.rightMargin: parent.width * 0.1
-                anchors.left: parent.left
-                anchors.leftMargin: parent.width * 0.1
+                //Layout.left: parent.left
+                Layout.leftMargin: parent.width * 0.1
+                // Layout.right: parent.right
+                // Layout.right: parent.right
+                Layout.rightMargin: parent.width * 0.1
+                // anchors.right: parent.right
+                // anchors.rightMargin: parent.width * 0.1
+                // anchors.left: parent.left
+                // anchors.leftMargin: parent.width * 0.1
                 maximumValue: maxValueProgressbar
                 visible: true
             }
@@ -206,12 +218,12 @@ Item {
     FileDialog {
         id: fileDialog
         title:qsTr("Please choose a folder")
-        folder: shortcuts.home
+        // folder: shortcuts.home
         selectFolder: true
-        sidebarVisible: true
+        // sidebarVisible: true
         width: Screen.width
         onAccepted: {
-            folderModel.append({"path": fileDialog.folder.toString().replace("file:///", ""), "option": false ,"type": optionTypeFolder}) // windows
+            folderModel.append({"path": fileDialog.folder.toString().replace("file:///", "/"), "option": false ,"type": optionTypeFolder}) // windows
             button_update.enabled = true
             close();
         }
@@ -223,7 +235,7 @@ Item {
 
     ListModel { id: folderModel }
 
-    function setPath() {
+    function setPathT() {
         var folderItems = []
         var folderOption = []
         for(var i = 0; i < folderModel.count; i++) {

@@ -18,20 +18,29 @@
  * Email: inge_lopez@yahoo.com
  */
 
-import QtQuick 2.5
-import QtQuick.Controls 1.4
+import QtQuick 2.3
+import QtQuick.Controls 1.2
 import QtQuick.Layouts 1.1
 
 Item {
     id: aboutView
+    anchors.fill: parent
+    Component.onCompleted: {
+        console.log("executou!", parent.objectName)
+        console.log("[rectangle]", mysquare.width)
+    }
+
     Rectangle {
+        id: mysquare
         SystemPalette { id: nativePalette; colorGroup: SystemPalette.Active }
-        anchors.fill: parent
+        // anchors.fill: parent
         color: nativePalette.window
 
         ColumnLayout {
             spacing: 6
-            anchors.fill: parent
+            // anchors.fill: parent
+            Layout.fillHeight: true
+            Layout.fillWidth: true
 
             Label {
                 id: label1
@@ -39,7 +48,8 @@ Item {
                 text: qsTr("About")
                 font.bold: true
                 font.pointSize: 24
-                anchors.horizontalCenter: parent.horizontalCenter
+                // Layout.alignment: Qt.AlignHCenter
+                // anchors.horizontalCenter: parent.horizontalCenter
             }
 
             TextArea {
@@ -77,7 +87,8 @@ Version: 3.0b Beta (3 March 2016)"
 
                 Image {
                     id: image1
-                    anchors.horizontalCenter: parent.horizontalCenter
+                    Layout.alignment: Qt.AlignHCenter
+                    // anchors.horizontalCenter: parent.horizontalCenter
                     fillMode: Image.PreserveAspectFit
                     source: "qrc:/logo-mghik"
                 }

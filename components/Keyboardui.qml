@@ -17,8 +17,8 @@
  *
  * Email: inge_lopez@yahoo.com
  */
-import QtQuick 2.5
-import QtQuick.Controls 1.4
+import QtQuick 2.3
+import QtQuick.Controls 1.2
 import QtQuick.Layouts 1.1
 import QtQuick.Dialogs 1.2
 
@@ -33,14 +33,16 @@ Item {
         ColumnLayout {
             spacing: 6
             anchors.fill: parent
-
+            //Layout.fillHeight: true
+            // Layout.fillWidth: true
             Label {
                 id: label1
                 color: nativePalette.windowText
                 text: qsTr("Keyboard config")
                 font.bold: true
                 font.pixelSize: 20
-                anchors.horizontalCenter: parent.horizontalCenter
+                Layout.alignment: Qt.AlignHCenter
+                // anchors.horizontalCenter: parent.horizontalCenter
             }
 
             TableView {
@@ -101,7 +103,7 @@ Item {
     Dialog {
         id: inputDialog
         title: qsTr("action key")
-        standardButtons:StandardButton.Cancel
+        standardButtons:StandardButton.Ok
 
         contentItem: Rectangle {
             implicitWidth: 200
@@ -112,6 +114,7 @@ Item {
             }
             Keys.onPressed: {
                 console.log("KEY:"+ event.key)
+                console.info(event.key)
                 settings.changeKey(rowToChange, event.key);
                 event.accepted = true
                 inputDialog.close()

@@ -18,8 +18,8 @@
  * Email: inge_lopez@yahoo.com
  */
 
-import QtQuick 2.5
-import QtQuick.Controls 2.0
+import QtQuick 2.3
+import QtQuick.Controls 1.2
 import QtQuick.Layouts 1.1
 import MRockola.Settings 1.0 as Settings
 

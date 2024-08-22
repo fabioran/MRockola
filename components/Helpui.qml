@@ -18,28 +18,36 @@
  * Email: inge_lopez@yahoo.com
  */
 
-import QtQuick 2.5
-import QtQuick.Controls 1.4
+import QtQuick 2.3
+import QtQuick.Controls 1.2
 import QtQuick.Layouts 1.1
 
 Item {
     id: root
+
+    Component.onCompleted: {
+        console.log("executou!", parent.objectName)
+        console.log("[onCompleted]", parent.width)
+        console.log("label1 X", label1.x)
+    }
+
     Rectangle {
         SystemPalette { id: nativePalette; colorGroup: SystemPalette.Active }
-        anchors.fill: parent
+        // anchors.fill: parent
         color: nativePalette.window
 
         ColumnLayout {
             spacing: 6
-            anchors.fill: parent
+            // anchors.fill: parent
 
             Label {
                 id: label1
                 color: nativePalette.windowText
-                text: qsTr("Help")
+                text: qsTr("Help me in the Alignment!")
                 font.bold: true
                 font.pointSize: 20
-                anchors.horizontalCenter: parent.horizontalCenter
+                // Layout.alignment: Qt.AlignHCenter
+                // anchors.horizontalCenter: parent.horizontalCenter
             }
             TextArea {
                 id: label2

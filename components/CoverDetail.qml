@@ -18,8 +18,9 @@
  * Email: inge_lopez@yahoo.com
  */
 
-import QtQuick 2.5
-import QtQuick.Controls 2.0
+import QtQuick 2.3
+import QtQuick.Controls 1.2
+import "../main"
 import MRockola.Settings 1.0 as Keyboard
 
 Item {
@@ -32,6 +33,9 @@ Item {
     property string album
     property string imagen
     property variant playlist
+//    property variant getlist
+    property variant getMlist
+//    property variant myList1
 
     property int position_x
     property int position_y
@@ -43,11 +47,14 @@ Item {
     opacity: 0
     visible: opacity
 
+    // CenterDialog { id: centeredDialog }
+
     Rectangle {
         id: coverFrame
         anchors.fill: parent
         anchors.margins: 5
-        color: "black"
+        // color: "yellow"
+        color:mainWindow.setPlayList?"lightsteelblue":"black"
         radius: 20
     }
 
@@ -58,7 +65,8 @@ Item {
         maximumLineCount: width
         elide: "ElideLeft"
         color: "#ffffff"
-        text: artist
+        // muda o title para indicar o modo-playlist
+        text: mainWindow.setPlayList?"PLAYLIST":artist
         activeFocusOnTab: false
         font.italic: true
         font.pointSize: 16
@@ -118,7 +126,7 @@ Item {
                     Text {
                         id: songName
                         color: "black"
-                        text:  ("00"+ index ).slice(-2) + ".-" + modelData
+                        text:  ("00"+ index ).slice(-2) + "->" + modelData
                         font.bold: true
                         font.pointSize: 18
                         wrapMode: Text.WordWrap
@@ -159,13 +167,25 @@ Item {
     }
 
     Keys.onPressed: {
+
         switch( settings.validateKey(event.key) ) {
-            case Keyboard.Settings.KEY_ENTER:
+            case Keyboard.Settings.KEY_P:
+                console.log("VEIO PRA CA POR QUE PEDIU PRA VOLTAR -> ")
                 coverDetailView.hide()
                 break;
             case Keyboard.Settings.KEY_SKIP:
-                mediaPlayer.playNext()
+                mediaPlayer.playNext();
+                if (mainWindow.setPlayList) {
+                    console.log("FUCKING ALERT");
+                    console.log("essa variavel eh da organizacao das capinhas na memoria ORDER: "+order)
+                }
+                else {
+                    console.log("FALSE - "&&"DISABLED SHIT")
+                    console.log(" THE Fucking order: "+order)
+                }
+                // centeredDialog.visible = true;
                 break;
+//            case Keyboard.Settings.KEY_BACK:
             case Keyboard.Settings.KEY_0:
             case Keyboard.Settings.KEY_1:
             case Keyboard.Settings.KEY_2:
@@ -178,12 +198,27 @@ Item {
             case Keyboard.Settings.KEY_9:
                 if(!search.isVisible)
                     search.show()
-                if(search.number.length < 2 )
+                if(search.number.length < 2 ) {
                     search.number += event.text
+                    console.log("event lenght ", search.number.length)
+                }
 
                 if(search.number.length === 2) {
                     var index = parseInt(search.number);
-                     setTrack(index)
+                    console.log("mas veio pra antes do setTrack ", search.number.length)
+                    console.log("conferir o tamanho da playlist ", playlist.length)
+                    if (search.number <= playlist.length) {
+                      setTrack(index)
+                      console.log("chegou a zerar... ", search.number.length)
+                    } else
+                        if (search.number === "99") { // nao trata o number como numero...
+                            for (var i=0; i<playlist.length; i++) {
+                                console.log("ITEM: ", playlist[i])
+                                setTrack(i)
+                            } // end loop for
+                            console.log("CHEGOU A ENTRAR?")
+                        } // fim do if
+                    console.log("ERA PRA TOCAR TUDO.. ", search.number)
                     search.number = ""
                     search.hide()
                 }
@@ -194,6 +229,11 @@ Item {
                 search.number = str.substring(0, str.length -1)
                 if( str.length === 1 )
                     search.hide()
+                break;
+            default:
+                console.log("FICA APERTANDO AI...", event.key)
+                // database.scan(myList1) // --> testei e foi, mandou o array pra lah.
+                database.scan([mainWindow.getNameList, index, order, artist, album, imagen])
                 break;
         }
         event.accepted = true
@@ -220,10 +260,116 @@ Item {
     function setTrack(index) {
         if(index >= playlist.length)
            return;
+        var songStr = qsTr(playlist[index])
+        var artistStr = database.getPathTrack(indexCover, index)
+        // var mixTape = database.get2PlayTable(indexCover) --> so funciona com tabela playlist
+        console.log("Current indexCover -> ", indexCover)
+        /*
+          select track.album, album.path, track.name, album.id, artist.name, album.name from TRACK
+          inner join ALBUM on track.album = album.id
+          inner join ARTIST on artist.id = album.artist
+          where album.id = 16;
+        */
+        // storeArtist(QString name, int genere)
+        // storeAlbum(QString name, QString path, QString image, int type)
+        // storeTracks(QFileInfoList fileList);
+        // mainWindow.fullTime =+ mediaPlayer.getCurrentTime()
+        if (mainWindow.setPlayList) {
+            if (mainWindow.getNameList == "none") {
+                mainWindow.getNameList = database.autoplaylist(mainWindow.getNameList)
+                console.log("PlayLIST ID: ", database.storeList(indexCover, artistStr, mainWindow.getNameList, [index, order]))
+                // centeredDialog.title = qsTr("PlayLIST ID: "+database.storeList(indexCover, artistStr, mainWindow.getNameList, index)) // strSong
+            }
+            else {
+                // Aqui se executa novamente (era pra ser diferente, mas...)
+                // mylist1 = [indexCover, artistStr, mainWindow.getNameList, index, order, artist, album, songStr, imagen]
+                console.log("ADICIONANDO MAIS: "+database.storeList(indexCover, artistStr, mainWindow.getNameList, [index, order] ))
+                // centeredDialog.title = qsTr("ADICIONANDO MAIS: "+database.storeList(indexCover, artistStr, mainWindow.getNameList, index))
+            }
+        }
+        else {
+            console.log("PlayIt! -> time?:", mediaPlayer.getCurrentTime() )
+            console.log("songStr ->", songStr )
+            console.log("order, artist, album, songStr, imagen, indexCover e index", order, artist, album, songStr, imagen, indexCover, index )
+            // console.log("tammanho do mixTape -> ", mixTape)
 
-        var songStr = index + ".-" +  playlist[index]
-        displayBarItem.playListAdd(order,artist, album, songStr, imagen )
-        mediaPlayer.setQueue(database.getPathTrack(indexCover, index), typeCover)
+            /* teste maluco q nao funciona...
+            if (getMlist !== "undefined") {
+                console.log("tah dentro do PlayList..", getMlist)
+                for (var i=0; i<mixTape.length; i++) {
+                   getMlist = mixTape[i].split(";")
+                   for (var j=0; j<getMlist.length; j++) {
+                      console.log("itens ->", getMlist[j], ": ", j)
+                   }
+                } // end loop for
+
+            } else {
+            */
+
+            displayBarItem.playListAdd(order,artist, album, songStr, imagen )
+            mediaPlayer.setQueue(database.getPathTrack(indexCover, index), typeCover)
+            database.storeHistory(indexCover, songStr, mainWindow.getNameList, index)
+        }
+        centeredDialog.text = qsTr(artistStr+" "+database.get2PlayTable(indexCover))
+        // centeredDialog.text = qsTr(artistStr+" "+getlist[1])
+        centeredDialog.visible = true
+    }
+/***
+* Funcao que toca a mixtape toda
+* return -> albumId, disc, song, ARTIST.name, position, ALBUM.path, ALBUM.image
+*
+*/
+    function playMixTape(Indx) {
+        var mixTape = database.get2PlayTable(Indx)
+
+        if(mixTape.length <= 0)
+           return; // se for de um so num vale...
+
+        for (var i=0; i<mixTape.length; i++) {
+           getMlist = mixTape[i].split(";")
+           for (var j=0; j<getMlist.length; j++) {
+              console.log("itens ->", getMlist[j], ": ", j)
+           }
+           console.log("i, artist, getlist[0], playlist[i] -> ", i, getMlist[1], getMlist[0], playlist[i])
+           console.log("0, 1, 2, 3 -> ", getMlist[0], getMlist[1], getMlist[2], getMlist[3])
+           displayBarItem.playListAdd(getMlist[4], getMlist[3], getMlist[0], playlist[i], getMlist[5] )
+           mediaPlayer.setQueue(getMlist[2], 0)
+           // mei que tocou mas sem pregar as covers corretas...
+        }
+        console.log("executou o loop for...o indx eh Coverdetail ->", Indx )
+        console.log("vamu lah mixtape... ", mixTape[0])
+        getMlist = 'undefined'
+        console.log("and then... erase getlist...", getMlist)
+    }
+/***
+* MIXTAPEPLAY
+*
+*/
+   function runInitialConfiguration() {
+        db = LocalStorage.openDatabaseSync(dbId, dbVersion, dbDescription, dbSize);
+
+/***
+* DATABASETX -> query.first()
+        db.transaction(function(tx) {
+            var sql = 'CREATE TABLE IF NOT EXISTS person (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL)';
+            tx.executeSql(sql);
+        } );
+*/
+
+        db.transaction(function(tx) {
+            var sql = 'SELECT id, name FROM person';
+            var rs = tx.executeSql(sql);
+            var ix;
+            var myId;
+            var myName;
+            for (ix = 0; ix < rs.rows.length; ix++) {
+               myId = rs.rows.item(ix).id;
+               myName = rs.rows.item(ix).name;
+               personListview.model.append({
+                   id: myId,
+                   name: myName });
+            }
+        } );
     }
 
     SequentialAnimation {

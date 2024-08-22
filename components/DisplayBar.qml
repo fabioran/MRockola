@@ -67,15 +67,17 @@ Item {
             Layout.fillHeight: true
             Rectangle {
                 id: albumImage
-                Layout.fillWidth: true
+                // Layout.fillWidth: true
                 Layout.fillHeight: true
-                Layout.maximumWidth: parent.height
+                // Layout.maximumWidth: parent.width
+                width: 94
+                // Layout.maximumHeight: parent.height
                 border.color: "black"
                 color: "transparent"
                 radius: 4
                 Image {
                     anchors.fill: parent
-                    anchors.margins: 4
+                    anchors.margins: 0
                     source: songImage? songImage : "qrc:/default"
                     mipmap: true
                 }
@@ -84,11 +86,13 @@ Item {
                 id: screenPlayList
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-                anchors.left: albumImage.right
-                anchors.leftMargin: 10
+                // anchors.left: albumImage.right
+                // anchors.leftMargin: 10
+                Layout.leftMargin: 10
 
                 Rectangle {
                     id: datas
+                    // Layout.margins: 2
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     Layout.maximumHeight: parent.height * 0.70
@@ -174,5 +178,9 @@ Item {
             songImage = "";
         }
     }
-    Component.onCompleted: {songModel.clear();} //fix clean list
+    Component.onCompleted: {
+        console.log("album image ", albumImage.Layout.maximumWidth)
+        console.log("album width ", albumImage.width)
+        songModel.clear();
+    } //fix clean list
 }
