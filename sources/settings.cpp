@@ -20,13 +20,14 @@
 
 #include "settings.h"
 #include <QKeySequence>
-#include <qdebug.h>
+#include <QDebug>
+#include <QMessageBox>
 
 Settings::Settings(QObject *parent) :
     QAbstractTableModel (parent)
 {
     m_keyboard << Keyboard(ENTER_KEY, ENTER_STR, Qt::Key_Enter, KEY_ENTER)
-    << Keyboard(BACK_KEY, BACK_STR, Qt::Key_Back, KEY_BACK)
+    << Keyboard(BACK_KEY, BACK_STR, Qt::Key_Backspace, KEY_BACK)
     << Keyboard(UP_KEY, UP_STR, Qt::Key_Up, KEY_UP)
     << Keyboard(DOWN_KEY, DOWN_STR, Qt::Key_Down, KEY_DOWN)
     << Keyboard(LEFT_KEY, LEFT_STR, Qt::Key_Left, KEY_LEFT)
@@ -34,6 +35,8 @@ Settings::Settings(QObject *parent) :
     << Keyboard(SKIP_KEY, SKIP_STR, Qt::Key_Space, KEY_SKIP)
     << Keyboard(CONFIG_KEY, CONFIG_STR, Qt::Key_F2, KEY_CONFIG)
     << Keyboard(SEARCH_KEY, SEARCH_STR, Qt::Key_F, KEY_SEARCH)
+    << Keyboard(FULL_KEY, FULL_STR, Qt::Key_P, KEY_P)
+    << Keyboard(RKEY_KEY, RKEY_STR, Qt::Key_R, KEY_R)
     << Keyboard(DELETE_KEY, DELETE_STR, Qt::Key_Delete, KEY_DELETE)
     << Keyboard(VOLUMEN_UP_KEY, VOLUMEN_UP_STR,  Qt::Key_Plus, KEY_VOLUMENUP)
     << Keyboard(VOLUMEN_DOWN_KEY, VOLUMEN_DOWN_STR,  Qt::Key_Minus, KEY_VOLUMENDOWN)
@@ -48,7 +51,8 @@ Settings::Settings(QObject *parent) :
     << Keyboard("key_8", "", Qt::Key_8, KEY_8)
     << Keyboard("key_9", "", Qt::Key_9, KEY_9);
 
-    loadSettings();
+    loadSettings(); // Primeira coisa q ele faz...
+    // saveSettings();
 }
 
 //------------------------------------------------------------------------------
@@ -60,8 +64,10 @@ int Settings::validateKey(uint key)
     for(i = m_keyboard.begin(); i != m_keyboard.end(); ++i)
     {
         if(i->getKey() == key)
-            return i->getCode();
+            return int(i->getCode());
     }
+    qDebug() << "validateKey process";
+
     return 0;
 }
 
@@ -87,8 +93,10 @@ void Settings::loadSettings()
     if(keys.isEmpty())
     {
         saveSettings();
+        qDebug() << "[loadSettings] saveSettings empty";
         return;
     }
+    qDebug() << "loadSettings from memory";
 
     settings.beginGroup("Keyboard");
 
@@ -115,6 +123,7 @@ void Settings::saveSettings()
     {
        settings.setValue(i->getHash(), i->getKey());
     }
+    qDebug() << "[saveSettings] Saved!";
 
     settings.endGroup();
 }

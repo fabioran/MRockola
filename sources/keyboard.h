@@ -24,13 +24,15 @@
 #include <QObject>
 
 #define ENTER_KEY   "key_enter"
-#define BACK_KEY    "key_back"
+#define BACK_KEY    "key_backspace"
 #define UP_KEY      "key_up"
 #define DOWN_KEY    "key_down"
 #define LEFT_KEY    "key_left"
 #define RIGHT_KEY   "key_rigth"
 #define SKIP_KEY    "key_skip"
 #define CONFIG_KEY  "key_config"
+#define FULL_KEY  "key_P"
+#define RKEY_KEY  "key_R"
 #define SEARCH_KEY  "key_search"
 #define DELETE_KEY  "key_delete"
 #define VOLUMEN_UP_KEY  "key_volumen_up"
@@ -38,13 +40,15 @@
 
 
 #define ENTER_STR   "Enter"
-#define BACK_STR    "Back"
+#define BACK_STR    "Backspace"
 #define UP_STR      "Up"
 #define DOWN_STR    "Down"
 #define LEFT_STR    "Left"
 #define RIGHT_STR   "Rigth"
 #define SKIP_STR    "Skip"
 #define CONFIG_STR  "Config"
+#define FULL_STR  "FullScreen"
+#define RKEY_STR  "key_R"
 #define SEARCH_STR  "Search"
 #define DELETE_STR  "Delete"
 #define VOLUMEN_UP_STR  "Volumen up"

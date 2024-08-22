@@ -34,6 +34,7 @@
 
 
 #include <vlc/vlc.h>
+#include "database.h"
 
 #define VOL_DEFAULT 5
 
@@ -67,6 +68,9 @@ public:
     Q_INVOKABLE void setQueue(QString song, int type);
     Q_INVOKABLE void setVolumeUp() { setVolume(VOL_DEFAULT); };
     Q_INVOKABLE void setVolumeDown() { setVolume(-VOL_DEFAULT); };
+    Q_INVOKABLE qint64 getCurrentTime();
+    qint64 setTape();
+
     void paint(QPainter *painter);
 
 signals:
@@ -117,6 +121,7 @@ private:
     bool            isEmpty;
     bool            setEqualizer;
     int             volume;
+    int             nCount;
 
     QList<avStack>  m_stack;
 
@@ -124,6 +129,8 @@ private:
     //input_thread_t *getInputThread( libvlc_media_player_t *p_mi );
     libvlc_instance_t*      m_libVlc;
     libvlc_media_player_t*  m_vlcPlayer;
+    libvlc_time_t AllQueueTime; // Soh pra ver se fica...
+
     //Video Properties
     QString m_fileName;
     quint32 m_width;

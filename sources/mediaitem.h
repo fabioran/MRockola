@@ -53,5 +53,21 @@ private:
     int           m_id;
     int           m_type;
 };
+// ----------> MINHA CLASSE
+
+class getListAlbum
+{
+
+public:
+    explicit getListAlbum();
+
+    getListAlbum(QVariantList getlist);
+
+private:
+    QVariantList s_getList;
+
+};
+
+
 
 #endif // MEDIAITEM_H

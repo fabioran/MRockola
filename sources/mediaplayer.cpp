@@ -21,6 +21,13 @@
 #include <QDir>
 #include <QTimer>
 #include <QPainter>
+#include <QMessageBox>
+#include <QtDebug>
+
+#ifdef __APPLE__
+/* Defined before OpenGL and GLUT includes to avoid deprecation messages */
+#define GL_SILENCE_DEPRECATION
+#endif
 
 #include "mediaplayer.h"
 #include "constants.h"
@@ -34,14 +41,14 @@ const QString equalizerReset = "0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.0
 
 MediaPlayer::MediaPlayer(QQuickItem *parent) :
     QQuickPaintedItem(parent),
-    m_program(0),
+    m_program(nullptr),
 #ifdef Q_OS_LINUX
     m_paintMode(PaintModeShaders)
 #else
     m_paintMode(PaintModeShaders)
 #endif
 {
-    m_pixelBuff = NULL;
+    m_pixelBuff = nullptr;
     isEmpty = true;
 
     setRenderTarget(InvertedYFramebufferObject);
@@ -51,7 +58,7 @@ MediaPlayer::MediaPlayer(QQuickItem *parent) :
 
     m_textureId = 0;
 
-    m_vlcPlayer = NULL;
+    m_vlcPlayer = nullptr;
     setEqualizer = false;
     equalizerValues = equalizerReset;
     equalizerEnable = false;
@@ -66,7 +73,6 @@ MediaPlayer::MediaPlayer(QQuickItem *parent) :
         "--intf=dummy",
         "--ignore-config",
         "--no-media-library",
-        "--no-one-instance",
         "--no-osd",
         "--no-snapshot-preview",
         "--no-stats",
@@ -75,6 +81,7 @@ MediaPlayer::MediaPlayer(QQuickItem *parent) :
     };
     // Init libVLC
     m_libVlc =  libvlc_new(sizeof(vlc_argv) / sizeof(vlc_argv[0]), vlc_argv);
+
 }
 
 //------------------------------------------------------------------------------
@@ -100,7 +107,7 @@ MediaPlayer::~MediaPlayer()
     if(m_program)
     {
         delete m_program;
-        m_program = 0;
+        m_program = nullptr;
     }
 }
 
@@ -108,17 +115,117 @@ MediaPlayer::~MediaPlayer()
 
 void MediaPlayer::setQueue(QString song, int type)
 {
-    avStack data;
-    data.path = song;
-    data.type = type;
-    m_stack.append(data);
+    // qint64 total
+    // QMessageBox Msgbox;
+    nCount += 1;
+    double msec = AllQueueTime, seg = msec / 1000.0, min = seg / 60.0;
+    // Msgbox.setText("PARADA do song: "+QString::number(min) + song);
+    // Msgbox.exec();
+    qDebug("minutes here: %d", min);
+    // double min = 10;
+    if (min < 10) {
+        avStack data;
+        data.path = song;
+        data.type = type;
+        m_stack.append(data);
+        // Msgbox.setText("setQueue >>> min: "+QString::number(min));
+        // Msgbox.exec();
+        qDebug("song here: ");
+        qDebug() << song;
 
-    if(isEmpty)
-    {
-        isEmpty = false;
-        playNext();
-        return;
+        if(isEmpty)
+        {
+            isEmpty = false;
+            playNext();
+            return;
+        }
     }
+    else {
+        // Msgbox.setText("SetQueuePorra"+QString::number(nCount));
+        // Msgbox.setText("SetQueuePorra");
+        // Msgbox.exec();
+        qDebug("nCount: ");
+        qDebug() << nCount;
+    }
+    // Msgbox.setText("setQueue -> nCount: "+QString::number(nCount));
+    // Msgbox.exec();
+    qDebug("end setQueue -->>>");
+
+
+}
+
+/***
+* GetTimeStr
+*
+*/
+// qint64 QString MediaPlayer::getCurrentTime() // Copiado do update
+qint64 MediaPlayer::getCurrentTime() // Copiado do update
+{
+    QString strTotal;
+
+    // AllQueueTime += libvlc_media_player_get_length(m_vlcPlayer);
+    // libvlc_time_t\ elapsedTime;
+
+    if(m_vlcPlayer)  {
+        // libvlc_time_t elapsedTime = libvlc_media_player_get_time(m_vlcPlayer);
+        // elapsedTime = libvlc_media_get_duration(vMedia);
+
+
+        int state = libvlc_media_player_get_state(m_vlcPlayer);
+        if (state == libvlc_Buffering || state == libvlc_Playing) {
+          AllQueueTime = libvlc_media_player_get_length(m_vlcPlayer);
+          AllQueueTime = AllQueueTime+0;
+          qDebug("AllQueueTime -> pass");
+          qDebug() << AllQueueTime;
+        }
+
+    } // Vai
+
+    double msec = AllQueueTime, seg = msec / 1000.0, min = seg / 60.0;
+    seg = qint64((min - qint64(min)) * 60.0);
+    min = qint64(min);
+    strTotal = QString::number(min) + ":" + QString::number(seg);
+    /*
+    auto nMin = min;
+    msec = elapsedTime*AllQueueTime;
+    seg = msec / 1000.0;
+    min = seg / 60.0;
+    seg = qint64((min - qint64(min)) * 60.0);
+    min = qint64(min);
+    auto strCurrent = QString::number(min) + ":" + QString::number(seg);
+    */
+    // return (strCurrent + "/" + strTotal);
+    return qint64(min);
+
+    // return "VAI";
+
+}
+
+/***
+* setTape (usar para fila pegando query na tabela playlist)
+* 04/05/2022
+*
+*/
+qint64 MediaPlayer::setTape() {
+    QString strTotal;
+
+    //QList<get2PlayTable> sPaths;
+    // QVariantList sPath;
+    // sPath = DataBase::get2PlayTable(50);
+
+    if(m_vlcPlayer)  {
+        int state = libvlc_media_player_get_state(m_vlcPlayer);
+        if (state == libvlc_Buffering || state == libvlc_Playing)
+          AllQueueTime = AllQueueTime+0;
+    } // Vai
+
+    double msec = AllQueueTime, seg = msec / 1000.0, min = seg / 60.0;
+    seg = qint64((min - qint64(min)) * 60.0);
+    min = qint64(min);
+    strTotal = QString::number(min) + ":" + QString::number(seg);
+
+    return qint64(min);
+
 }
 
 //------------------------------------------------------------------------------
@@ -130,7 +237,7 @@ void MediaPlayer::skip()
         libvlc_media_player_stop(m_vlcPlayer);
         libvlc_media_player_release(m_vlcPlayer);
     }
-    m_vlcPlayer = NULL;
+    m_vlcPlayer = nullptr;
     emit progressBarSetValue(0);
 }
 
@@ -151,6 +258,7 @@ void MediaPlayer::playNext()
 {
     emit isVideo(false);
     emit finishTrack();
+    qDebug("mediaPlayNext -> finishTrack");
 
     if(!m_stack.isEmpty())
     {
@@ -168,14 +276,16 @@ void MediaPlayer::playNext()
         isEmpty = true;
         skip();
     }
+    qDebug("mediaPlayNext -> end");
 }
 
 //------------------------------------------------------------------------------
 
 void MediaPlayer::updateInterface() //Update interface and check if song is finished
-{
+{    
     if(m_vlcPlayer)
     {
+        // AllQueueTime =+ libvlc_media_player_get_length(m_vlcPlayer);
         int state = libvlc_media_player_get_state(m_vlcPlayer);
         if(state == libvlc_Buffering || state == libvlc_Playing)
         {
@@ -198,6 +308,11 @@ void MediaPlayer::updateInterface() //Update interface and check if song is fini
 
 void MediaPlayer::setCurrentSource(avStack data)
 {
+    QMessageBox Msgbox;
+    QString strTime;
+    // libvlc_media_track_t ***nTracks = nullptr;
+    // uint AllTracks;
+
     if(m_vlcPlayer &&
         libvlc_media_player_is_playing(m_vlcPlayer)
        )
@@ -209,6 +324,10 @@ void MediaPlayer::setCurrentSource(avStack data)
 
     // New Media
     libvlc_media_t *vlcMedia = libvlc_media_new_path(m_libVlc, data.path.toUtf8().constData());
+    // Msgbox.setText("NEW MEDIA -> setCurrentSource");
+    // Msgbox.exec();
+    qDebug("NEW MEDIA -> setCurrentSource");
+    qDebug() << data.path.toUtf8().constData();
 
     if( !vlcMedia  )
     {
@@ -233,11 +352,26 @@ void MediaPlayer::setCurrentSource(avStack data)
     {
         libvlc_video_set_callbacks(m_vlcPlayer, vlcVideoLockCallBack, vlcVideoUnlockCallback, vlcVideoDisplayCallback,
                                    this);
-        libvlc_video_set_format_callbacks(m_vlcPlayer, vlcVideoFormatCallback, NULL);
+        libvlc_video_set_format_callbacks(m_vlcPlayer, vlcVideoFormatCallback, nullptr);
     }
     // And play
     libvlc_media_player_play(m_vlcPlayer);
     setEqualizer = false;
+    // AllTracks = libvlc_media_tracks_get(vlcMedia, nTracks);
+    if (libvlc_media_get_parsed_status(vlcMedia)) {
+      AllQueueTime = libvlc_media_get_duration(vlcMedia);
+      // AllQueueTime += 1;
+      double msec = AllQueueTime, seg = msec / 1000.0, min = seg / 60.0;
+      strTime = QString::number(min, 'g', 4);
+      Msgbox.setText("AFTER Parser: "+strTime);
+      Msgbox.exec();
+      // libvlc_media_player_stop(m_vlcPlayer);
+      // libvlc_media_player_play(m_vlcPlayer);
+    }
+    qDebug("setCurrentSource -> end process");
+
+
+
 }
 
 //------------------------------------------------------------------------------
@@ -268,8 +402,7 @@ void MediaPlayer::paint(QPainter *painter)
         painter->beginNativePainting();
 
 #if defined(QT_OPENGL_ES_2)
-        if(m_textureId)
-        {
+        if(m_textureId       {
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, m_textureId);
         }

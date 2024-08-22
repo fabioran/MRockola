@@ -27,13 +27,30 @@
 #include <QtSql/QSqlDatabase>
 #include <QFileInfo>
 #include <QVector>
+#include <QSqlRecord>
+#include <QVariant>
+#include <dirent.h>
 
+/*
+class Wifi : public QAbstractListModel
+{
+  Q_OBJECT
+  public:
+    // Wifi();
+    explicit Wifi(QObject *parent = 0);
+    Q_INVOKABLE QVariant scan();
+//    Q_INVOKABLE int checkIfConnected();
+
+//    QStringList* getDevice();
+};
+*/
 
 class DataBase : public QAbstractListModel
 {
     Q_OBJECT
 
 public:
+
     enum AnimalRoles {
         OrderRole = Qt::UserRole + 1,
         IdRole,
@@ -44,6 +61,7 @@ public:
         PlayListRole
     };
 
+
     explicit DataBase(QObject *parent = 0);
     void updateDataBase(QStringList path, QList<bool> folderOption, int type);
 
@@ -52,6 +70,11 @@ public:
     Q_INVOKABLE QString getPathTrack(int disc, int song);
     Q_INVOKABLE void setPaths(QStringList list, QList<bool> option);
     Q_INVOKABLE int getFoundAlbum(QString index, int type);
+    Q_INVOKABLE QString storeList(int disc, QString song, QString nameList, QVariant varArray);
+    Q_INVOKABLE QString storeHistory(int disc, QString song, QString nameList, int pos);
+    Q_INVOKABLE QVariant get2PlayTable(int indexSong);
+    Q_INVOKABLE QString autoplaylist(QString AutoList);
+    Q_INVOKABLE QVariant scan(QVariant myList);
 
     int rowCount(const QModelIndex & parent = QModelIndex()) const;
     QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
@@ -77,14 +100,16 @@ private:
     void storeArtist(QString name, int genere = 0);
     void storeTracks(QFileInfoList fileList);
     void searchMedia(QFileInfo folder, QString artist, MRockola::MediaType mediaType, int type);
+    void searchMedia2 (DIR *parent, int level, QString path, QString artist, int type);
 
 private:
     int             albumCount;
     int             artistIndex;
     QSqlDatabase    m_dbase;
 
-    QVariantList        artistList;
-    QList<mediaItem>    m_covers;
+    QVariantList        artistList; // Aponta para a tabela artist < populated under loadCovers() >
+    QList<mediaItem>    m_covers; // Aponta pra alguma tabela...
+    QList<getListAlbum> getIt;
 
 };
 

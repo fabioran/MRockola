@@ -25,10 +25,12 @@
 #include <QAbstractTableModel>
 #include <QMap>
 #include <QSettings>
+
 #include "keyboard.h"
 
-#define  MRockolaSettings  QSettings settings("Mghik Technology","MRockola")
-
+#define  MRockolaSettings  QSettings settings("Mghik Technology","MRockolaSettings")
+// MacOS: plutil -p ~/Library/Preferences/com.mghik-technology.MRockolaSettings.plist
+// Linux: cat ~/.config/MRockolaSettings.conf
 
 class Settings : public QAbstractTableModel
 {
@@ -36,7 +38,7 @@ class Settings : public QAbstractTableModel
 
 public:
 
-    explicit Settings(QObject *parent = 0);
+    explicit Settings(QObject *parent = nullptr);
     void saveSettings();
 
     Q_INVOKABLE int validateKey(uint key);
@@ -65,7 +67,9 @@ public:
         KEY_7,
         KEY_8,
         KEY_9,
-        KEY_DELETE
+        KEY_DELETE,
+        KEY_P,
+        KEY_R
     };
 
     enum AnimalRoles {
@@ -76,6 +80,7 @@ public:
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
+    void popIt(int indexIt);
 
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
 

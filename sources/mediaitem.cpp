@@ -38,6 +38,14 @@ mediaItem::mediaItem(int order, int id, QString artist, QString album, QString i
     m_type = type;
 }
 
+//MINHA LISTA
+
+getListAlbum::getListAlbum(QVariantList getlist)
+{
+    s_getList = getlist;
+}
+
+
 //------------------------------------------------------------------------------
 
 QString mediaItem::getTrack(int id) const
@@ -46,7 +54,7 @@ QString mediaItem::getTrack(int id) const
     if(s_playList.size() > id)
         return s_playList.at(id).toString();
 
-    return  NULL;
+    return  nullptr;
 }
 
 //------------------------------------------------------------------------------
