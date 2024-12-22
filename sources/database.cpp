@@ -278,9 +278,9 @@ void DataBase::updateDataBase(QStringList path, QList<bool> folderOption, int ty
             QStringList nameFilter;
             nameFilter << "*.mp3" << "*.MP3" << "*.mP3";
             QFileInfoList list = folder.entryInfoList( nameFilter, QDir::Files );
-            qDebug("CHEGOU AQUI MP3");
+            qDebug("CHEGOU AQUI MP3 pegou o namefilter");
             QFileInfoList folderList =  folder.entryInfoList(QDir::Dirs|QDir::NoDotAndDotDot, QDir::Name );
-            qDebug("FOI DEPOIS");
+            qDebug("FOI DEPOIS, pegou o entryinfo");
             /*
             QFileInfoList folderList = folder.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot |
                                                             QDir::NoSymLinks, QDir::Name | QDir::IgnoreCase);
@@ -298,13 +298,18 @@ void DataBase::updateDataBase(QStringList path, QList<bool> folderOption, int ty
             emit stepMaxCount( folderList.size() * path.size());
             for ( int i = 0; i < folderList.size(); ++i ) {
                 emit stepLoading(i);
-                QByteArray myPath = folderList.at(i).path().toLocal8Bit();
+                QByteArray myPath = folderList.at(i).filePath().toUtf8();
                 DIR *path = opendir(myPath.data());
                 qDebug() << folder.dirName();
-                qDebug() << "expurgos folder.dirname";
-                qDebug() << myPath;
+                // qDebug() << "expurgos folder.dirname";
+                qDebug() << myPath.data();
+                qDebug() << folderList.at(i).filePath();
+                qDebug() << i;
+                qDebug() << "bota o path ai garoto";
+                qDebug() << path; // valor em hexa de area de memoria... num dah pra ler...
                 // searchMedia(folderList.at(i), folder.dirName(), mediaType, type);
-                searchMedia2 (path, 0, folderList.at(i).path(), folder.dirName(), mediaType);
+                searchMedia2 (path, 0, folderList.at(i).filePath(), folder.dirName(), mediaType);
+                closedir(path);
             } //end for
         }
     }
@@ -317,14 +322,22 @@ void DataBase::updateDataBase(QStringList path, QList<bool> folderOption, int ty
 
 /***
 * em 25/07/2024 -> função para substituir searchMedia
-*
+* update 20/12/24 -> não funciona parte do storetracks().
 *
 */
 void DataBase::searchMedia2 (DIR *parent, int level, QString path, QString artist, int type) {
     struct dirent *ent;
+    qDebug() << "getting it started searchMedia2!";
     if (!parent) {
+        qDebug() << "ENCERROU searchMedia";
         return;
     }
+    qDebug() << "then it reaches subdir loop.";
+    /* if ((ent = readdir(parent)) != nullptr)
+        qDebug() << "vai entrar";
+    else {
+        qDebug() << "NAO VAI ENTRAR";
+    } */
     while ((ent = readdir(parent)) != nullptr) {
         if ((strcmp(ent->d_name, ".") == 0) ||
             (strcmp(ent->d_name, "..") == 0)) {
@@ -337,9 +350,11 @@ void DataBase::searchMedia2 (DIR *parent, int level, QString path, QString artis
             continue;
         }
         int fd = openat(parent_fd, ent->d_name, O_RDONLY | O_DIRECTORY);
+        qDebug() << "testar se eh diretorio";
+        qDebug() << ent->d_name << level;
         if (fd != -1) { // Directory
             // printf("%*s%s/\n", level, "", ent->d_name);
-            // qDebug() << level << ent->d_name;
+            qDebug() << level << ent->d_name;
             DIR *child = fdopendir(fd);
             if (child) {
                 searchMedia2(child, level + 1, path +"/"+ ent->d_name, ent->d_name, type);
@@ -349,7 +364,7 @@ void DataBase::searchMedia2 (DIR *parent, int level, QString path, QString artis
         } else if (errno == ENOTDIR) { // Regular file
             // printf("%*s%s\n", level, "", ent->d_name);
             // path = path + "/" + ent->d_name;
-            // qDebug() << path;
+            qDebug() << path << ent->d_name;
             QString fileExt = QString(ent->d_name).split(".")[1];
 
             if(filesIntoFolder(path)) {
@@ -380,6 +395,7 @@ void DataBase::searchMedia2 (DIR *parent, int level, QString path, QString artis
             perror("openat");
 
     } // end while
+    qDebug() << "then it comes to the end of searchMedia2.";
 } //end void
 
 /***
