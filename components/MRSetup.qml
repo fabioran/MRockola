@@ -16,6 +16,7 @@
  * along with This program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * Email: inge_lopez@yahoo.com
+ * aqui é a tela do F2, entao so vai ter os menus dispostos...
  */
 
 import QtQuick 2.3
@@ -85,7 +86,7 @@ Item {
                         color:  nativePalette.window
                         Folderui {
                             id: uifolder
-                            // anchors.fill: parent
+                            // anchors.fill: parent  /* esse pedaço organiza a tela, sem ele some tudu. */
                             Layout.fillHeight: true
                             Layout.fillWidth: true
                             visible: false

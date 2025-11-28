@@ -271,7 +271,8 @@ void DataBase::updateDataBase(QStringList path, QList<bool> folderOption, int ty
 
     for (int k = 0; k < path.size(); ++k)
     {
-        QDir folder(path.at(k));
+        QDir folder(path.at(k), "", QDir::LocaleAware, QDir::AllEntries);
+        // QDir dir(argv[path], "", QDir::LocaleAware, QDir::AllEntries);
         qDebug("UPDATE DB FUNCTION");
         if ( folder.exists() )
         {
@@ -307,8 +308,8 @@ void DataBase::updateDataBase(QStringList path, QList<bool> folderOption, int ty
                 qDebug() << i;
                 qDebug() << "bota o path ai garoto";
                 qDebug() << path; // valor em hexa de area de memoria... num dah pra ler...
-                // searchMedia(folderList.at(i), folder.dirName(), mediaType, type);
-                searchMedia2 (path, 0, folderList.at(i).filePath(), folder.dirName(), mediaType);
+                searchMedia(folderList.at(i), folder.dirName(), mediaType, type);
+                // searchMedia2 (path, 0, folderList.at(i).filePath(), folder.dirName(), mediaType);
                 closedir(path);
             } //end for
         }

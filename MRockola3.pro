@@ -18,6 +18,11 @@ RESOURCES += qml.qrc \
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH = QML
 QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.14
+# QMAKE_MACOSX_DEPLOYMENT_TARGET = 11.00
+
+#macx {
+#    QMAKE_MAC_SDK = macosx10.9
+#}
 
 # Default rules for deployment.
 include(deployment.pri)
@@ -35,6 +40,7 @@ HEADERS += \
 TRANSLATIONS = languages/mrockola_es.ts
 CONFIG +=sdk_no_version_check
 #QMAKE_CXXFLAGS += -Wno-deprecated-declarations
+QMAKE_CXXFLAGS += -Wno-deprecated-copy
 #MacOS
 INCLUDEPATH += /usr/local/include
 LIBS += -L/usr/local/lib -lvlc

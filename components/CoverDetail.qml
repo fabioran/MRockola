@@ -217,6 +217,7 @@ Item {
                                 setTrack(i)
                             } // end loop for
                             console.log("CHEGOU A ENTRAR?")
+                            // coverDetailView.hide()
                         } // fim do if
                     console.log("ERA PRA TOCAR TUDO.. ", search.number)
                     search.number = ""
@@ -306,7 +307,7 @@ Item {
             } else {
             */
 
-            displayBarItem.playListAdd(order,artist, album, songStr, imagen )
+            displayBarItem.playListAdd(order.concat("0%1".arg(index).slice(-2)), artist, album, songStr, imagen )
             mediaPlayer.setQueue(database.getPathTrack(indexCover, index), typeCover)
             database.storeHistory(indexCover, songStr, mainWindow.getNameList, index)
         }
