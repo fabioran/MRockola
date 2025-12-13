@@ -33,9 +33,7 @@ Item {
     property string album
     property string imagen
     property variant playlist
-//    property variant getlist
     property variant getMlist
-//    property variant myList1
 
     property int position_x
     property int position_y
@@ -335,7 +333,9 @@ Item {
            console.log("0, 1, 2, 3 -> ", getMlist[0], getMlist[1], getMlist[2], getMlist[3])
            displayBarItem.playListAdd(getMlist[4], getMlist[3], getMlist[0], playlist[i], getMlist[5] )
            mediaPlayer.setQueue(getMlist[2], 0)
-           // mei que tocou mas sem pregar as covers corretas...
+           // mei que tocou e agora pegou as covers corretas...
+           // indexCover -> capa(tape), songStr -> titulo faixa, getNameList -> nome album, index -> position.
+           // depois tem de testar: database.storeHistory(indexCover, songStr, mainWindow.getNameList, index)
         }
         console.log("executou o loop for...o indx eh Coverdetail ->", Indx )
         console.log("vamu lah mixtape... ", mixTape[0])

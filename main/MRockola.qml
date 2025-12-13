@@ -289,9 +289,9 @@ ApplicationWindow {
 
                             if (coverDetail.typeCover === 4) {
                               console.log("indexCover ->", coverDetail.indexCover)
+                              // coverDetail.database.storeHistory(coverDetail.indexCover, songStr, mainWindow.getNameList, index)
                               coverDetail.playMixTape(coverDetail.indexCover)
                               // coverDetail.setTrack(coverDetail.indexCover)
-
                             }
                             else {
                               gridView.currentItem.openCoverDetail();
